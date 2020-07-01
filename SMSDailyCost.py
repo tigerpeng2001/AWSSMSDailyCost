@@ -47,12 +47,16 @@ def put_sms_d2M_cost(d2M_cost, currenminute):
             }])
 
 def lambda_handler(event, context):
-    
+
     today = datetime.date.today()
-    fiveminute = datetime.timedelta(minutes=5)
-    today0000 = datetime.datetime(today.year, today.month, today.day)
-    yesterady2355 = today0000 - fiveminute
-    starting_m2d_cost = get_sms_cost(yesterady2355, today0000 )
+    if today.day == 1:
+        starting_m2d_cost = 0
+    else:
+        fiveminute = datetime.timedelta(minutes=5)
+        today0000 = datetime.datetime(today.year, today.month, today.day)
+        yesterady2355 = today0000 - fiveminute
+        starting_m2d_cost = get_sms_cost(yesterady2355, today0000 )
+
     # print(starting_m2d_cost)
     curren = datetime.datetime.now()
     currenminute = datetime.datetime(curren.year, curren.month, curren.day, curren.hour, curren.minute)
@@ -62,7 +66,7 @@ def lambda_handler(event, context):
     current_d2M_cost = current_m2d_cost - starting_m2d_cost
     # print(current_d2M_cost)
     put_sms_d2M_cost(current_d2M_cost, currenminute)
-    
+
     return {
         'statusCode': 200,
         'body': json.dumps('Check CloudWatch logs.')
